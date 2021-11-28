@@ -38,7 +38,7 @@ class Login extends Component {
           Alert.alert(this.state.header, response.metadata.message, [
             {
               text: 'Oke',
-              onPress: () => this.props.navigation.navigate('Home'),
+              onPress: () => this.props.navigation.push('Home'),
             },
           ]);
         } else {

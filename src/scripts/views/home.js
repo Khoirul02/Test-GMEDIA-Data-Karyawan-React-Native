@@ -60,7 +60,7 @@ class Home extends Component {
     handleLogout() {
         AsyncStorage.setItem('uid', '');
         AsyncStorage.setItem('token', '');
-        return this.props.navigation.navigate('Login');
+        return this.props.navigation.push('Login');
     }
     deleteAlretAction = (nip) => {
         Alert.alert('Data Karyawan', 'Apakah Anda Yakin Akan Menghapus Data?',
@@ -216,7 +216,8 @@ const styles = StyleSheet.create({
         backgroundColor : '#fafafa',
         borderRadius : 5,
         elevation : 3,
-        marginTop : 10,
+        marginTop : 5,
+        marginBottom : 5,
       },
       cardImage : {
         justifyContent : 'center',

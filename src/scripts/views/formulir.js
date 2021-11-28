@@ -106,7 +106,6 @@ class Formulir extends Component {
       let tempDate = new Date(curretDate);
       let fDate = tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
       this.setState({tgl_lahir : fDate});
-      console.log(fDate);
     };
     const showMode = (curretDate) => {
       this.setState({show : true});
