@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
           padding : 5,
           justifyContent : 'center',
           alignItems : 'flex-start',
-          paddingHorizontal : 15,
+          paddingLeft : 15,
         },
         cardLabel : {
             fontSize : 16,
