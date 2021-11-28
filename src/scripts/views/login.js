@@ -3,6 +3,7 @@
 import React, {Component} from 'react';
 import KaryawanSource from './../data/karyawan-source';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {styles} from './../styles/login';
 import {
   Text,
   View,
@@ -10,7 +11,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
+  BackHandler,
   Alert,
 } from 'react-native';
 class Login extends Component {
@@ -21,6 +22,23 @@ class Login extends Component {
       username: '',
       password: '',
     };
+  }
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      Alert.alert(
+        'Data Karyawan',
+        'Apakah anda yakin akan keluar aplikasi ?',
+        [
+          {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+          {text: 'Oke', onPress: () => BackHandler.exitApp()},
+        ],
+        {cancelable: false},
+      );
+      return true;
+    });
+  }
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
   render() {
     const login = async () => {
@@ -76,43 +94,4 @@ class Login extends Component {
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  logo: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 50,
-  },
-  image: {
-    width: 250,
-    height: 200,
-  },
-  header: {
-    backgroundColor: '#2196f3',
-    paddingVertical: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-  },
-  inputText: {
-    marginTop: 20,
-    borderWidth: 1.5,
-    borderColor: '#bdbdbd',
-    marginHorizontal: 40,
-    borderRadius: 10,
-  },
-  button: {
-    backgroundColor: '#2196f3',
-    paddingVertical: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginHorizontal: 120,
-    fontSize: 18,
-    borderRadius: 30,
-    elevation: 5,
-  },
-});
 export default Login;
