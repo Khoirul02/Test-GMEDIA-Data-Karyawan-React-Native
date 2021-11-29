@@ -140,7 +140,6 @@ class Home extends Component {
                         {
                             formulir : 'Edit',
                             nip : item.nip,
-                            nama : item.nama,
                         })}>
                         <Icon name="edit" size={25} color="#2196f3"/>
                     </TouchableOpacity>
@@ -161,6 +160,7 @@ class Home extends Component {
                 activeOpacity={0.7}
                 onPress={() => this.props.navigation.push('Formulir', {
                     formulir : 'Simpan',
+                    nip : '',
                 })}
                 style={styles.touchableOpacityStyle}>
                 <Image

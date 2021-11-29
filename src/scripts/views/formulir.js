@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component } from 'react';
@@ -20,7 +21,7 @@ class Formulir extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nip : '',
+      nip : this.props.route.params.nip,
       nama : '',
       alamat : '',
       gender : 'L',
@@ -28,11 +29,14 @@ class Formulir extends Component {
       date : new Date(),
       mode : 'date',
       show : false,
+      status : this.props.route.params.formulir,
+      edited : false,
     };
   }
   componentDidMount() {
-      if (this.props.route.params.formulir === 'Edit'){
-      let vNip = this.props.route.params.nip;
+      if (this.state.status === 'Edit'){
+      let vNip = this.state.nip;
+      this.setState({edited : true});
       const data = {
         nip : vNip,
       };
@@ -66,7 +70,7 @@ class Formulir extends Component {
           nama: this.state.nama,
           alamat: this.state.alamat,
           gender: this.state.gender,
-          tgl_lahir: this.state.date,
+          tgl_lahir: this.state.tgl_lahir,
         };
         const response = await KaryawanSource.addKaryawan(data);
         if (response.metadata.status === 200) {
@@ -119,23 +123,51 @@ class Formulir extends Component {
       this.setState({show : true});
       this.setState({mode : curretDate});
     };
-
-    if (this.props.route.params.formulir === 'Edit'){
-      return (
+    let {edited} = this.state;
+    const renderLabelNip = () => {
+      if (edited) {
+        return <Text style ={styles.label}>NIP</Text>;
+      } else {
+        return null;
+      }
+    };
+    const renderInputNip = () => {
+      if (edited) {
+        return <TextInput
+          value={this.state.nip}
+          style={styles.inputText}
+          editable={false}
+          selectTextOnFocus={false}
+        />;
+      } else {
+        return null;
+      }
+    };
+    const renderButtton = () => {
+      if (edited) {
+        return <TouchableOpacity
+        onPress = {updateDataKaryawan}
+        style={styles.button}>
+        <Text style={{color: '#ffffff', fontWeight: 'bold'}}>{this.state.status}</Text>
+      </TouchableOpacity>;
+      } else {
+        return <TouchableOpacity
+        onPress = {addDataKaryawan}
+        style={styles.button}>
+        <Text style={{color: '#ffffff', fontWeight: 'bold'}}>{this.state.status}</Text>
+      </TouchableOpacity>;
+      }
+    };
+    return (
         <View style={styles.container}>
           <StatusBar barStyle="light-content" backgroundColor="#1976d2" />
           <View style={styles.header}>
           <Text style={{color: '#ffffff', fontWeight: 'bold', fontSize: 18}}>
-                    Detail Data Karyawan {this.props.route.params.nama}
+            {this.props.route.params.formulir} Data Karyawan
           </Text>
           </View>
-          <Text style ={styles.label}>NIP</Text>
-          <TextInput
-            value={this.props.route.params.nip}
-            style={styles.inputText}
-            placeholder="Nama"
-            onChangeText={value => this.setState({nama: value})}
-          />
+          {renderLabelNip()}
+          {renderInputNip()}
           <Text style ={styles.label}>Nama</Text>
           <TextInput
             value={this.state.nama}
@@ -165,7 +197,7 @@ class Formulir extends Component {
         <TextInput
           value={this.state.tgl_lahir}
           placeholder="Tanggal Lahir"
-          onChangeText={value => this.setState({nama: value})}
+          onChangeText={value => this.setState({tgl_lahir: value})}
         />
         <View style={styles.datePickerIcon}>
           <TouchableOpacity
@@ -184,77 +216,9 @@ class Formulir extends Component {
             onChange={onChange}
             />
           )}
-          <TouchableOpacity
-            onPress = {updateDataKaryawan}
-            style={styles.button}>
-            <Text style={{color: '#ffffff', fontWeight: 'bold'}}>{this.props.route.params.formulir}</Text>
-          </TouchableOpacity>
+          {renderButtton()}
         </View>
       );
-    }
-    return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#1976d2" />
-        <View style={styles.header}>
-          <Text style={{color: '#ffffff', fontWeight: 'bold', fontSize: 18}}>
-                    Tambah Data Karyawan
-          </Text>
-        </View>
-        <Text style ={styles.label}>Nama</Text>
-        <TextInput
-          value={this.state.nama}
-          style={styles.inputText}
-          placeholder="Nama"
-          onChangeText={value => this.setState({nama: value})}
-        />
-        <Text style ={styles.label}>Alamat</Text>
-        <TextInput
-          multiline={true}
-          numberOfLines={4}
-          value={this.state.alamat}
-          style={styles.inputText}
-          placeholder="Alamat"
-          onChangeText={value => this.setState({alamat: value})}
-        />
-        <Text style ={styles.label}>Jenis Kelamin</Text>
-        <View style={styles.inputPicker}>
-          <Picker
-          selectedValue={this.state.gender} onValueChange={(itemValue, indexValue)=> this.setState({gender: itemValue})}>
-            <Picker.Item label="Laki-laki" value="L" />
-            <Picker.Item label="Perempuan" value="P" />
-          </Picker>
-        </View>
-        <Text style ={styles.label}>Tanggal Lahir</Text>
-        <View style={styles.datePicker}>
-        <TextInput
-          value={this.state.tgl_lahir}
-          placeholder="Tanggal Lahir"
-          onChangeText={value => this.setState({nama: value})}
-        />
-        <View style={styles.datePickerIcon}>
-          <TouchableOpacity
-            onPress = {()=> showMode('date')}>
-            <Icon name="calendar" size={25} color="#2196f3"/>
-          </TouchableOpacity>
-          </View>
-        </View>
-          {this.state.show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={this.state.date}
-            mode={this.state.mode}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-            />
-          )}
-        <TouchableOpacity
-          onPress = {addDataKaryawan}
-          style={styles.button}>
-          <Text style={{color: '#ffffff', fontWeight: 'bold'}}>{this.props.route.params.formulir}</Text>
-        </TouchableOpacity>
-      </View>
-    );
   }
 }
 export default Formulir;
