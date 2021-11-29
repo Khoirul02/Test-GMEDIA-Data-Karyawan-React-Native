@@ -21,6 +21,7 @@ class Formulir extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      header : 'Tambah Data Karyawan',
       nip : this.props.route.params.nip,
       nama : '',
       alamat : '',
@@ -35,8 +36,9 @@ class Formulir extends Component {
   }
   componentDidMount() {
       if (this.state.status === 'Edit'){
-      let vNip = this.state.nip;
+      this.setState({header : 'Edit Data Karyawan'});
       this.setState({edited : true});
+      let vNip = this.state.nip;
       const data = {
         nip : vNip,
       };
@@ -163,7 +165,7 @@ class Formulir extends Component {
           <StatusBar barStyle="light-content" backgroundColor="#1976d2" />
           <View style={styles.header}>
           <Text style={{color: '#ffffff', fontWeight: 'bold', fontSize: 18}}>
-            {this.props.route.params.formulir} Data Karyawan
+            {this.state.header}
           </Text>
           </View>
           {renderLabelNip()}
