@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
@@ -14,6 +15,7 @@ import {
   BackHandler,
   Alert,
 } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -36,10 +38,31 @@ class Login extends Component {
       );
       return true;
     });
+    this.requestUserPermission();
   }
   componentWillUnmount() {
     this.backHandler.remove();
   }
+  requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      if (enabled) {
+        this.getFcmToken();
+        console.log('Authorization status:', authStatus);
+      }
+  };
+
+  getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      // console.log(fcmToken);
+      console.log('Your Firebase Token is:', fcmToken);
+    } else {
+      console.log('Failed', 'No Token Recived');
+    }
+  };
   render() {
     const login = async () => {
       try {
